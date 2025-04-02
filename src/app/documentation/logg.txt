@@ -1,0 +1,20 @@
+Mandag
+Lagde en figma design fil med kakediagram og loggin side for Erikstad kommune.
+Lagde kommuneskjold og startet med nettsiden
+
+Tirsdag
+Started on API endpoints and Databases with mariadb.
+
+Onsdag
+Set up chartjs with a piechart and all relevant info about the different parties.
+made a lib folder to sort requests about information from the database, it doesnt work yet.
+
+
+TODO:
+LEARN HOW QUERY'S WORK
+make login page.
+link mariadb to site.
+LINK MARIADB TO API
+Fix piechart colors
+
+
