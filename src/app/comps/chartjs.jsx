@@ -72,7 +72,7 @@ export default function Chartjs() {
 	return (
 		<main className="h-dvh w-8/9 bg-[#fff] flex flex-col items-center justify-center rounded-2xl">
 			<section className="h-7/9 w-8/9 bg-[#222] flex flex-row justify-start items-center">
-				<div className="h-120 w-120 m-5  rounded-2xl bg-white ">
+				<div className="h-130 w-130 m-5  rounded-2xl bg-white ">
 					<canvas ref={canvasRef} width={1} height={1} className="w-1 h-1" />
 				</div>
 				<div className="flex flex-col text-2xl">

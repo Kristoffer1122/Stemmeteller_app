@@ -2,17 +2,14 @@
 import { useEffect, useState } from "react";
 import Kommune_Skjold from "../media/Kommune_Skjold.svg"
 import Image from "next/image";
-export function Erikstad_Header() {
+import Registrer from "./register";
+import Login_Page from "./login";
+export default function Erikstad_Header() {
+
 
 	function go_To_Page(idx) {
-		const windows = ["/", "/", "/login_page"]
-		if (idx == 0) {
-			window.location.replace(windows[0])
-		} else if (idx == 1) {
-			window.location.replace(windows[1])
-		} else if (idx == 2) {
-			window.location.replace(windows[2])
-		}
+		const windows = ["/", "/", "/login_page", "/login_page/register_page"]
+		window.location.replace(windows[idx])
 	}
 	return (
 		<div className="bg-[#222] m-0 p-0 h-28 w-dvw overflow-x-hidden flex flex-col justify-center items-center">
