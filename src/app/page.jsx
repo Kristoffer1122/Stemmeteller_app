@@ -10,13 +10,9 @@ export default function Home() {
   const [loggedIn, useCheckedLoggedIn] = useState("")
 
   return (
-    <main className="bg-[#222] flex flex-col justify-start items-center overflow-x-hidden">
+    <main className="bg-[#222] flex flex-col justify-start items-center overflow-hidden">
       <Erikstad_Header />
       <Chartjs />
-      {
-        loggedIn ? <Registrer /> : <Login_Page />
-
-      }
     </main>
   )
 };

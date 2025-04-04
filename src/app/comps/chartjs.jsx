@@ -1,93 +1,115 @@
 'use client'
-import { Chart, Colors } from "chart.js/auto";
-import { useEffect, useRef } from "react";
-
+import { Chart } from "chart.js/auto";
+import { useEffect, useRef, useState } from "react";
 
 export default function Chartjs() {
-
-	/*
-	let partifarger = [
-		{ name: "Arbeider Partiet", color: "#f00", stemmer: ap_stemm },
-		{ name: "Høyre", color: "#00f", stemmer: h_stemm },
-		{ name: "Senter Partiet", color: "#0f0", stemmer: sp_stemm },
-		{ name: "Fremskrittspartiet", color: "#f44", stemmer: frp_stemm },
-		{ name: "Sosialistisk Venstreparti", color: "#a00", stemmer: sv_stemm },
-		{ name: "Rødt", color: "#f00", stemmer: r_stemm },
-		{ name: "Venstre", color: "#066", stemmer: v_stemm },
-		{ name: "Miljøpartiet De Grønne", color: "#0f0", stemmer: mdg_stemm },
-		{ name: "Kristelig Folkeparti, color: "#111", stemmer: krf_stemm },
-		{ name: "Pasientfokus", color: "#cb0", stemmer: pf_stemm },
-	];
-	*/
-	let partiinfo = [
-		{ name: "Arbeiderpartiet", color: "#f00", },
-		{ name: "Høyre", color: "#00f", },
-		{ name: "Senter Partiet", color: "#0f0", },
-		{ name: "Fremskrittspartiet", color: "#f44", },
-		{ name: "Sosialistisk Venstreparti", color: "#a00", },
-		{ name: "Rødt", color: "#f00", },
-		{ name: "Venstre", color: "#066", },
-		{ name: "Miljøpartiet De Grønne", color: "#0f0", },
-		{ name: "Kristelig Folkeparti", color: "#111", },
-		{ name: "Pasientfokus", color: "#cb0", },
-	]
-
+	const [chartData, setChartData] = useState([]);
 	const canvasRef = useRef(null);
 
-	useEffect(() => {
-		const canvas = canvasRef.current
-		const ctx = canvas.getContext('2d')
-		new Chart(ctx, {
-			type: 'pie',
-			data: {
-				labels: ['Arbeiderpartiet', 'Høyre', 'Senter Partiet', 'Fremskrittspartiet', 'Sosialistisk Venstreparti', 'Rødt', 'Venstre', 'Miljøpartiet De Grønne', 'Kristelig Folkeparti', 'Pasientfokus'],
-				datasets: [{
-					label: '# av stemmer',
-					data: [12, 19, 3, 4, 5, 15, 16, 16, 11, 8],
-					borderWidth: 2,
-					backgroundColor: [
-						partiinfo[0].color,
-						partiinfo[1].color,
-						partiinfo[2].color,
-						partiinfo[3].color,
-						partiinfo[4].color,
-						partiinfo[5].color,
-						partiinfo[6].color,
-						partiinfo[7].color,
-						partiinfo[8].color,
-						partiinfo[9].color,
-					]
+	// Function to fetch data and update the chart
+	const handleVotes = async () => {
+		try {
+			const res = await fetch('/api/votes', {
+				method: 'GET', // Assuming the data is fetched via GET method
+				headers: {
+					'Content-Type': 'application/json',
 				},
-				]
-			},
-			options: {
-				scales: {
-					y: {
-						beginAtZero: true,
-					}
-				}
+			});
+
+			const data = await res.json();
+
+			if (res.ok && data) {
+				console.log('Received data:', data);
+				setChartData(data);
 			}
-		});
+		} catch (error) {
+			console.error('Error fetching vote data:', error);
+		}
+	};
+
+	// Sette opp stemmene
+	const incrementVote = async (partyName) => {
+		if (localStorage.getItem("loggedInn") === "true") {
+			try {
+				const res = await fetch('/api/votes', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ name: partyName }),
+				});
+				console.log(res)
+
+				const data = await res.json();
+
+				if (res.ok) {
+					console.log('Vote incremented for:', partyName);
+					handleVotes();
+				} else {
+					console.error('Failed to increment vote');
+				}
+			} catch (error) {
+				console.error('Error incrementing vote:', error);
+			}
+		} else {
+			alert("You must be logged in to vote!");
+		}
+	};
+
+	// chart.js
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		const ctx = canvas.getContext('2d');
+
+		if (chartData.length > 0) {
+			// Preparing the data for the chart
+			const labels = chartData.map(party => party.name);
+			const data = chartData.map(party => party.stemmer);
+			const colors = chartData.map(party => party.color);
+
+			const chart = new Chart(ctx, {
+				type: 'pie',
+				data: {
+					labels: labels,
+					datasets: [{
+						label: '# of Votes',
+						data: data,
+						borderWidth: 2,
+						backgroundColor: colors,
+					}],
+				},
+			});
+
+			return () => chart.destroy()
+		}
+	}, [chartData]);
+
+	// Fetch data when the component is mounted
+	useEffect(() => {
+		handleVotes();
 	}, []);
+
 	return (
-		<main className="h-dvh w-8/9 bg-[#fff] flex flex-col items-center justify-center rounded-2xl">
-			<section className="h-7/9 w-8/9 bg-[#222] flex flex-row justify-start items-center">
-				<div className="h-130 w-130 m-5  rounded-2xl bg-white ">
-					<canvas ref={canvasRef} width={1} height={1} className="w-1 h-1" />
+		<div className="h-dvh w-dvw overflow-hidden flex flex-col items-center">
+			<main className="h-220 w-10/12 bg-[#fff] flex justify-evenly">
+				<section className="h-200 w-200">
+					<canvas ref={canvasRef}></canvas>
+				</section>
+				<div className="flex flex-col">
+					{chartData.map((party, index) => (
+						<button
+							className="w-50 "
+							key={index}
+							onClick={() => incrementVote(party.name)}
+							style={{ backgroundColor: party.color, margin: '5px', padding: '10px' }}
+						>
+							<div className=" flex flex-col text-center">
+								<p> Stemm For {party.name} </p>
+							</div>
+						</button>
+					))}
 				</div>
-				<div className="flex flex-col text-2xl">
-					<p className="text-white"> {partiinfo[0].name} </p>
-					<p className="text-white"> {partiinfo[1].name} </p>
-					<p className="text-white"> {partiinfo[2].name} </p>
-					<p className="text-white"> {partiinfo[3].name} </p>
-					<p className="text-white"> {partiinfo[4].name} </p>
-					<p className="text-white"> {partiinfo[5].name} </p>
-					<p className="text-white"> {partiinfo[6].name} </p>
-					<p className="text-white"> {partiinfo[7].name} </p>
-					<p className="text-white"> {partiinfo[8].name} </p>
-					<p className="text-white"> {partiinfo[9].name} </p>
-				</div>
-			</section>
-		</main>
+			</main>
+		</div>
 	);
 }

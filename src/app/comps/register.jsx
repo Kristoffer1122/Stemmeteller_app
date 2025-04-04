@@ -1,27 +1,25 @@
 'use client'
 
-// beklager saa mye, dette er saa sykt chat gippity'a
 
 import { useState } from "react";
 export default function Registrer() {
+
 	const [userName, setUserName] = useState('');
 	const [userPassword, setUserPassword] = useState('');
 	const [responseMessage, setResponseMessage] = useState('');
 
 
+	// sende info til apiet, POST sending.
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
 		try {
-			console.log("test")
-			const res = await fetch(`/api/auth`, {
+			const res = await fetch('/api/auth', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ user_name: userName, user_password: userPassword }),
 			});
-
 			const data = await res.json();
 			if (res.ok) {
 				setResponseMessage('Registered');
@@ -29,7 +27,7 @@ export default function Registrer() {
 				setResponseMessage(data.message);
 			}
 		} catch (error) {
-			setResponseMessage(error.message);
+			setResponseMessage(error.message + "tarald e kul");
 		}
 	};
 

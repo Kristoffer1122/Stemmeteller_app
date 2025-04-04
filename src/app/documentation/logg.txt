@@ -14,7 +14,9 @@ Torsdag
 Lagde link mellom mariadb og siden, etter lagde jeg en fin login og registrerings side
 
 
+Fredag
+Fikset loggin og registrering med db og sikkerhet hvor passorded ikke sendes med mindre brukernavnet er riktig.
+Fikset charten oppimot databasen og stemme funksjon hvor man maa vaere logget inn for aa stemme.
+Fikset littttt design paa siden og fikk det til aa see litt finere ut.
+
 TODO:
-Fix register not adding to db
-
-

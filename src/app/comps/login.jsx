@@ -15,7 +15,7 @@ export default function Login_Page() {
 
 		// her kokkelerte jeg, lagrer KUN username naar jeg skal sjekke om brukeren finnes.
 		const userinfo = new URLSearchParams({
-			user_name: userName,
+			user_name: userName, user_password: userPassword,
 		}).toString();
 
 		try {
@@ -30,7 +30,7 @@ export default function Login_Page() {
 
 			const data = await res.json();
 			if (res.ok) {
-				setResponseMessage('User Found');
+				setResponseMessage('Logget Inn');
 				localStorage.setItem("loggedInn", true);
 			} else {
 				setResponseMessage(data.message);
@@ -95,7 +95,7 @@ export default function Login_Page() {
 				</div>
 				<button className='border-2 border-[#222] w-3/9 p-1 m-5 cursor-pointer' type="submit">Logg Inn</button>
 			</form>
-			<button onClick={() => { window.location.replace("/login_page/register_page/") }}>Register</button>
+			<button onClick={() => { window.location.replace("/register_page/") }}>Register</button>
 			{responseMessage && <p>{responseMessage}</p>}
 		</div>
 	);
