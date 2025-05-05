@@ -6,11 +6,11 @@ export default function Chartjs() {
 	const [chartData, setChartData] = useState([]);
 	const canvasRef = useRef(null);
 
-	// Function to fetch data and update the chart
+	// hente data fra databasen
 	const handleVotes = async () => {
 		try {
 			const res = await fetch('/api/votes', {
-				method: 'GET', // Assuming the data is fetched via GET method
+				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -38,31 +38,27 @@ export default function Chartjs() {
 					},
 					body: JSON.stringify({ name: partyName }),
 				});
-				console.log(res)
-
-				const data = await res.json();
 
 				if (res.ok) {
-					console.log('Vote incremented for:', partyName);
+					console.log('Stemme sendt for :', partyName);
 					handleVotes();
 				} else {
-					console.error('Failed to increment vote');
+					console.error('Kunne ikke legge till stemmen din');
 				}
 			} catch (error) {
-				console.error('Error incrementing vote:', error);
+				console.error('Kunne ikke legge till stemmen din:', error);
 			}
 		} else {
-			alert("You must be logged in to vote!");
+			alert("Logg inn for aa stemme!");
 		}
 	};
 
-	// chart.js
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
 
 		if (chartData.length > 0) {
-			// Preparing the data for the chart
+			// hente ut all data ifra chartData
 			const labels = chartData.map(party => party.name);
 			const data = chartData.map(party => party.stemmer);
 			const colors = chartData.map(party => party.color);
@@ -84,7 +80,7 @@ export default function Chartjs() {
 		}
 	}, [chartData]);
 
-	// Fetch data when the component is mounted
+	// hent dataen naar det er lastet
 	useEffect(() => {
 		handleVotes();
 	}, []);
